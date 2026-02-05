@@ -1,10 +1,44 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import { SkewButton } from '../ui/SkewButton';
+import { hashconnect } from '../../services/hashconnect';
 
 export const Navbar = () => {
   const location = useLocation();
+  const [accountId, setAccountId] = useState(null);
+
+  useEffect(() => {
+    const syncAccount = () => {
+      const saved = localStorage.getItem('hashconnectData');
+      if (saved) {
+        try {
+          const data = JSON.parse(saved);
+          if (data.accountIds && data.accountIds.length > 0) {
+            setAccountId(data.accountIds[0]);
+          } else {
+            setAccountId(null);
+          }
+        } catch (e) {
+          console.error("HashConnect data parse error", e);
+          setAccountId(null);
+        }
+      } else {
+        setAccountId(null);
+      }
+    };
+
+    syncAccount();
+    window.addEventListener('hashconnect-pairing', syncAccount);
+    return () => window.removeEventListener('hashconnect-pairing', syncAccount);
+  }, []);
+
+  const handleConnect = () => {
+    // Timeout to ensure extension is ready (Fix for URI Missing)
+    setTimeout(() => {
+      hashconnect.openPairingModal();
+    }, 500);
+  };
 
   const navItems = [
     { name: 'Floor', path: '/', icon: 'casino' },
@@ -55,8 +89,8 @@ export const Navbar = () => {
         </nav>
 
         {/* Connect */}
-        <SkewButton variant="primary" className="hidden md:flex">
-          Connect Wallet
+        <SkewButton variant="primary" className="hidden md:flex" onClick={handleConnect}>
+          {accountId ? accountId : "Connect Wallet"}
         </SkewButton>
 
         {/* Mobile Menu Icon */}
