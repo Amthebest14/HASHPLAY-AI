@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    .clip-corner-tl-br {
+        clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+    }
+    .clip-trapezoid {
+        clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+    }
+    .clip-skew-tab {
+        clip-path: polygon(15% 0, 100% 0, 85% 100%, 0% 100%);
+    }
+    .clip-notch {
+        clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+    }
+    .clip-brutalist {
+        clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+    }
+
+    .skew-box {
+        transform: skewX(-15deg);
+    }
+    .skew-content {
+        transform: skewX(15deg);
+    }
+
+    /* Scrollbar */
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+/* Custom scrollbar for raw brutalist feel */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #0f2323;
+}
+::-webkit-scrollbar-thumb {
+    background: #395656;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #00ffff;
+}
+
+body {
+    background-color: #0f2323;
+}
