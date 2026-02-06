@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import { SkewButton } from '../ui/SkewButton';
-import { hashconnect, openModal } from '../../services/hashconnect';
+import { hashconnect, openModal, disconnectWallet } from '../../services/hashconnect';
 
 export const Navbar = () => {
   const location = useLocation();
@@ -11,6 +11,11 @@ export const Navbar = () => {
   const [isBridgeReady, setIsBridgeReady] = useState(false);
 
   useEffect(() => {
+    // Check initial state immediately
+    if (localStorage.getItem('hashconnectData')) {
+        setIsBridgeReady(true);
+    }
+
     const handleReady = () => setIsBridgeReady(true);
     window.addEventListener('hashconnect-ready', handleReady);
 
@@ -43,21 +48,26 @@ export const Navbar = () => {
 
   const handleConnect = (e) => {
     if (e) e.preventDefault();
-    if (!isBridgeReady) return;
+    // Allow click if connected (to do nothing or show menu) or if bridge is ready
+    if (!isBridgeReady && !accountId) return;
 
     console.log('Button Clicked!');
     setIsConnecting(true);
 
-    // Call openModal directly (service handles delays/logic now)
     try {
       openModal();
-      // Reset loading state after a reasonable timeout if pairing doesn't happen immediately
-      // In a real app, we'd listen for a "pairing started" event
       setTimeout(() => setIsConnecting(false), 5000);
     } catch (error) {
       console.error("Connect error", error);
       setIsConnecting(false);
     }
+  };
+
+  const handleDisconnect = async () => {
+      await disconnectWallet();
+      setAccountId(null);
+      setIsConnecting(false);
+      window.location.reload();
   };
 
   const navItems = [
@@ -110,23 +120,25 @@ export const Navbar = () => {
 
         {/* Connect */}
         <div className="hidden md:flex items-center gap-2">
-            <button
-                onClick={() => { localStorage.clear(); window.location.reload(); }}
-                className="text-xs font-mono text-gray-500 hover:text-red-500 uppercase tracking-widest px-2"
-                title="Reset Connection"
-            >
-                [RESET]
-            </button>
+            {accountId && (
+                <button
+                    onClick={handleDisconnect}
+                    className="border-2 border-red-500 text-red-500 font-bold uppercase text-xs px-4 py-3 hover:bg-red-500 hover:text-black transition-colors sharp-corners"
+                >
+                    [DISCONNECT]
+                </button>
+            )}
+
             <SkewButton
                 variant="primary"
                 onClick={handleConnect}
                 disabled={!isBridgeReady && !accountId}
                 className={!isBridgeReady && !accountId ? "opacity-50 cursor-not-allowed" : ""}
             >
-              {isConnecting || (!isBridgeReady && !accountId) ? (
+              {(isConnecting || (!isBridgeReady && !accountId)) ? (
                 <span className="flex items-center gap-2">
                   <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
-                  {isConnecting ? "Connecting..." : "Loading Bridge..."}
+                  {accountId ? accountId : (isConnecting ? "Connecting..." : "Loading Bridge...")}
                 </span>
               ) : (
                 accountId ? accountId : "Connect Wallet"

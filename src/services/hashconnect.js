@@ -57,7 +57,10 @@ if (hashconnect.foundExtensionEvent) {
 // Initialize
 export const initializeHashConnect = async () => {
     try {
-        // Clear stale sessions before init to ensure fresh connection
+        // Only clear data if specifically requested or invalid, otherwise we lose persistent sessions
+        // But for this "Force Clean" request cycle, we keep the clear.
+        // In a real persist scenario, we'd check if data exists and is valid.
+        // For now, consistent with "Fresh Start".
         localStorage.removeItem('hashconnectData');
         if (hashconnect.clearConnectionsAndData) {
             await hashconnect.clearConnectionsAndData();
@@ -69,10 +72,25 @@ export const initializeHashConnect = async () => {
         if (hashconnect.hcData && hashconnect.hcData.pairingString) {
              console.log('Pairing String:', hashconnect.hcData.pairingString);
         }
-
-        window.dispatchEvent(new Event('hashconnect-ready'));
     } catch (error) {
         console.error('HashConnect Initialization Error:', error);
+    } finally {
+        window.dispatchEvent(new Event('hashconnect-ready'));
+    }
+};
+
+export const disconnectWallet = async () => {
+    try {
+        if (hashconnect.disconnect) {
+            await hashconnect.disconnect();
+        }
+        if (hashconnect.clearConnectionsAndData) {
+            await hashconnect.clearConnectionsAndData();
+        }
+        localStorage.removeItem('hashconnectData');
+        localStorage.clear();
+    } catch (e) {
+        console.error("Disconnect error", e);
     }
 };
 
