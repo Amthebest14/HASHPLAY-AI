@@ -9,6 +9,7 @@ export const Navbar = () => {
   const [accountId, setAccountId] = useState(null);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isBridgeReady, setIsBridgeReady] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     // Check initial state immediately
@@ -51,7 +52,7 @@ export const Navbar = () => {
     // Allow click if connected (to do nothing or show menu) or if bridge is ready
     if (!isBridgeReady && !accountId) return;
 
-    console.log('Button Clicked!');
+    console.log('Mobile Connect Clicked');
     setIsConnecting(true);
 
     try {
@@ -119,37 +120,71 @@ export const Navbar = () => {
         </nav>
 
         {/* Connect */}
-        <div className="hidden md:flex items-center gap-2">
+        <div className="flex items-center gap-2">
             {accountId && (
                 <button
                     onClick={handleDisconnect}
-                    className="border-2 border-red-500 text-red-500 font-bold uppercase text-xs px-4 py-3 hover:bg-red-500 hover:text-black transition-colors sharp-corners"
+                    className="hidden md:block border-2 border-red-500 text-red-500 font-bold uppercase text-xs px-4 py-3 hover:bg-red-500 hover:text-black transition-colors sharp-corners"
                 >
                     [DISCONNECT]
                 </button>
             )}
 
+            {/* Main Connect Button - Visible on all screens now as requested */}
             <SkewButton
                 variant="primary"
                 onClick={handleConnect}
                 disabled={!isBridgeReady && !accountId}
-                className={!isBridgeReady && !accountId ? "opacity-50 cursor-not-allowed" : ""}
+                className={clsx(
+                    !isBridgeReady && !accountId ? "opacity-50 cursor-not-allowed" : "",
+                    "flex" // Always flex, usually constrained by container but request says "visible on all screen sizes"
+                )}
             >
               {(isConnecting || (!isBridgeReady && !accountId)) ? (
                 <span className="flex items-center gap-2">
                   <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
-                  {accountId ? accountId : (isConnecting ? "Connecting..." : "Loading Bridge...")}
+                  {accountId ? (
+                      <span className="max-w-[100px] truncate">{accountId}</span>
+                  ) : (
+                      isConnecting ? "..." : "Loading..."
+                  )}
                 </span>
               ) : (
-                accountId ? accountId : "Connect Wallet"
+                accountId ? <span className="max-w-[100px] truncate">{accountId}</span> : "Connect"
               )}
             </SkewButton>
         </div>
 
         {/* Mobile Menu Icon */}
-        <button className="lg:hidden text-white">
+        <button className="lg:hidden text-white ml-4" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             <span className="material-symbols-outlined">menu</span>
         </button>
+
+        {/* Mobile Menu Overlay */}
+        {isMenuOpen && (
+            <div className="absolute top-full left-0 w-full bg-obsidian border-b-2 border-accent-teal p-4 flex flex-col gap-4 z-50 shadow-xl">
+                {navItems.map((item) => (
+                    <Link
+                        key={item.path}
+                        to={item.path}
+                        className="flex items-center gap-2 text-white font-bold p-3 hover:bg-white/10"
+                        onClick={() => setIsMenuOpen(false)}
+                    >
+                        <span className="material-symbols-outlined">{item.icon}</span>
+                        {item.name}
+                    </Link>
+                ))}
+                {accountId && (
+                    <button
+                        onClick={handleDisconnect}
+                        className="border-2 border-red-500 text-red-500 font-bold uppercase text-sm p-3 hover:bg-red-500 hover:text-black transition-colors w-full text-left flex items-center gap-2"
+                    >
+                        <span className="material-symbols-outlined">logout</span>
+                        DISCONNECT
+                    </button>
+                )}
+            </div>
+        )}
       </div>
     </header>
   );
