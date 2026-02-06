@@ -56,14 +56,11 @@ if (hashconnect.foundExtensionEvent) {
 // Initialize
 export const initializeHashConnect = async () => {
     try {
+        // Clear stale sessions before init to ensure fresh connection
+        localStorage.removeItem('hashconnectData');
+
         const initData = await hashconnect.init();
         console.log('HashConnect Initialized', initData);
-        // Check if we have saved data
-        const savedData = localStorage.getItem('hashconnectData');
-        if (savedData) {
-            // We might want to re-establish or check pairing, but v3 usually handles state internally or via initData
-            // If initData contains saved pairings, we are good.
-        }
     } catch (error) {
         console.error('HashConnect Initialization Error:', error);
     }
@@ -74,7 +71,7 @@ export const getSigner = (accountId) => {
 };
 
 export const openModal = () => {
-    console.log('Opening HashConnect modal');
+    console.log('Opening HashConnect modal (with 500ms delay)');
 
     // Clear stale pairing string if accessible (best effort based on v3 SDK structure)
     if (hashconnect.hcData) {
@@ -86,6 +83,8 @@ export const openModal = () => {
         hashconnect.connectToLocalWallet();
     } else {
         console.log('Extension not found, opening pairing modal...');
-        hashconnect.openPairingModal();
+        setTimeout(() => {
+            hashconnect.openPairingModal();
+        }, 500);
     }
 };
