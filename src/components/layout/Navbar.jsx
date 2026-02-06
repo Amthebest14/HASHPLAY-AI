@@ -35,7 +35,7 @@ export const Navbar = () => {
 
   const handleConnect = (e) => {
     if (e) e.preventDefault();
-    console.log('Connect button clicked');
+    console.log('Button Clicked!');
 
     // Timeout to ensure extension is ready (Fix for URI Missing)
     setTimeout(() => {
