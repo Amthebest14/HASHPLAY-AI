@@ -7,6 +7,7 @@ import { hashconnect, openModal } from '../../services/hashconnect';
 export const Navbar = () => {
   const location = useLocation();
   const [accountId, setAccountId] = useState(null);
+  const [isConnecting, setIsConnecting] = useState(false);
 
   useEffect(() => {
     const syncAccount = () => {
@@ -36,11 +37,18 @@ export const Navbar = () => {
   const handleConnect = (e) => {
     if (e) e.preventDefault();
     console.log('Button Clicked!');
+    setIsConnecting(true);
 
-    // Timeout to ensure extension is ready (Fix for URI Missing)
-    setTimeout(() => {
+    // Call openModal directly (service handles delays/logic now)
+    try {
       openModal();
-    }, 500);
+      // Reset loading state after a reasonable timeout if pairing doesn't happen immediately
+      // In a real app, we'd listen for a "pairing started" event
+      setTimeout(() => setIsConnecting(false), 5000);
+    } catch (error) {
+      console.error("Connect error", error);
+      setIsConnecting(false);
+    }
   };
 
   const navItems = [
@@ -93,7 +101,14 @@ export const Navbar = () => {
 
         {/* Connect */}
         <SkewButton variant="primary" className="hidden md:flex" onClick={handleConnect}>
-          {accountId ? accountId : "Connect Wallet"}
+          {isConnecting ? (
+            <span className="flex items-center gap-2">
+              <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
+              Connecting...
+            </span>
+          ) : (
+            accountId ? accountId : "Connect Wallet"
+          )}
         </SkewButton>
 
         {/* Mobile Menu Icon */}

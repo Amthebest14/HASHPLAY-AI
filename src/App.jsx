@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { MainFloor } from './pages/MainFloor';
 import { RewardIntelligence } from './pages/RewardIntelligence';
 import { Leaderboard } from './pages/Leaderboard';
 import { NFTVault } from './pages/NFTVault';
+import { initializeHashConnect } from './services/hashconnect';
 
 function App() {
+  useEffect(() => {
+    initializeHashConnect();
+  }, []);
+
   return (
     <Router>
       <Routes>
