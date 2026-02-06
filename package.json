@@ -14,6 +14,7 @@
     "buffer": "^6.0.3",
     "clsx": "^2.1.1",
     "ethers": "^6.16.0",
+    "framer-motion": "^12.33.0",
     "hashconnect": "^3.0.14",
     "process": "^0.11.10",
     "react": "^19.2.0",

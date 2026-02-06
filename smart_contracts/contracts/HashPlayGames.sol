@@ -81,11 +81,11 @@ contract HashPlayGames {
 
     /**
      * @notice Wager on a Dice Roll (2d6).
-     * @param prediction 0 = Under 7, 1 = Over 7.
+     * @param prediction 0 = Under 7, 1 = Over 7, 2 = Equal 7.
      */
     function rollDice(uint8 prediction) external payable {
         require(msg.value > 0, "Wager must be > 0");
-        require(prediction == 0 || prediction == 1, "Invalid prediction: 0 (Under) or 1 (Over)");
+        require(prediction <= 2, "Invalid prediction: 0 (Under), 1 (Over), 2 (Equal)");
 
         // Generate randomness using Hedera's PRNG (mapped to PREVRANDAO)
         uint256 random = block.prevrandao;
@@ -96,16 +96,21 @@ contract HashPlayGames {
         uint256 result = d1 + d2;
 
         bool won = false;
+        uint256 multiplier = rewardMultiplier;
+
         if (prediction == 0 && result < 7) {
             won = true;
         } else if (prediction == 1 && result > 7) {
             won = true;
+        } else if (prediction == 2 && result == 7) {
+            won = true;
+            // 5.0x Multiplier for Equal Jackpot
+            multiplier = 50000;
         }
-        // Note: result == 7 is a loss for both Over and Under bets.
 
         uint256 payout = 0;
         if (won) {
-            payout = (msg.value * rewardMultiplier) / BASIS_POINTS;
+            payout = (msg.value * multiplier) / BASIS_POINTS;
             require(address(this).balance >= payout, "Insufficient contract balance for payout");
             payable(msg.sender).transfer(payout);
         }
