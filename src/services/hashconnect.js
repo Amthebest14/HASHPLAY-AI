@@ -54,3 +54,8 @@ hashconnect.init().then((initData) => {
 export const getSigner = (accountId) => {
     return hashconnect.getSigner(accountId);
 };
+
+export const openModal = () => {
+    console.log('Opening HashConnect modal');
+    hashconnect.openPairingModal();
+};

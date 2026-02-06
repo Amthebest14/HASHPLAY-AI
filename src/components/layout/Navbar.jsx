@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import { SkewButton } from '../ui/SkewButton';
-import { hashconnect } from '../../services/hashconnect';
+import { hashconnect, openModal } from '../../services/hashconnect';
 
 export const Navbar = () => {
   const location = useLocation();
@@ -33,10 +33,13 @@ export const Navbar = () => {
     return () => window.removeEventListener('hashconnect-pairing', syncAccount);
   }, []);
 
-  const handleConnect = () => {
+  const handleConnect = (e) => {
+    if (e) e.preventDefault();
+    console.log('Connect button clicked');
+
     // Timeout to ensure extension is ready (Fix for URI Missing)
     setTimeout(() => {
-      hashconnect.openPairingModal();
+      openModal();
     }, 500);
   };
 
