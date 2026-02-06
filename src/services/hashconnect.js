@@ -3,8 +3,9 @@ import { LedgerId } from '@hashgraph/sdk';
 
 const appMetadata = {
     name: 'HashPlay AI',
-    description: 'AI-Powered P2E Gaming',
-    url: 'https://localhost:3000'
+    description: 'AI-Powered Web3 Gaming',
+    icons: ['https://hashplayai.vercel.app/logo.png'],
+    url: 'https://hashplayai.vercel.app'
 };
 
 // Placeholder Project ID as requested
@@ -68,6 +69,8 @@ export const initializeHashConnect = async () => {
         if (hashconnect.hcData && hashconnect.hcData.pairingString) {
              console.log('Pairing String:', hashconnect.hcData.pairingString);
         }
+
+        window.dispatchEvent(new Event('hashconnect-ready'));
     } catch (error) {
         console.error('HashConnect Initialization Error:', error);
     }
@@ -78,7 +81,7 @@ export const getSigner = (accountId) => {
 };
 
 export const openModal = () => {
-    console.log('Opening HashConnect modal (with 800ms delay)');
+    console.log('Opening HashConnect modal');
 
     // Clear stale pairing string if accessible (best effort based on v3 SDK structure)
     if (hashconnect.hcData) {
@@ -90,8 +93,7 @@ export const openModal = () => {
         hashconnect.connectToLocalWallet();
     } else {
         console.log('Extension not found, opening pairing modal...');
-        setTimeout(() => {
-            hashconnect.openPairingModal();
-        }, 800);
+        // Init is async awaited before button is active, so manual delay is removed
+        hashconnect.openPairingModal();
     }
 };

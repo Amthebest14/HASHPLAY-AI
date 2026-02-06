@@ -8,8 +8,12 @@ export const Navbar = () => {
   const location = useLocation();
   const [accountId, setAccountId] = useState(null);
   const [isConnecting, setIsConnecting] = useState(false);
+  const [isBridgeReady, setIsBridgeReady] = useState(false);
 
   useEffect(() => {
+    const handleReady = () => setIsBridgeReady(true);
+    window.addEventListener('hashconnect-ready', handleReady);
+
     const syncAccount = () => {
       const saved = localStorage.getItem('hashconnectData');
       if (saved) {
@@ -31,11 +35,16 @@ export const Navbar = () => {
 
     syncAccount();
     window.addEventListener('hashconnect-pairing', syncAccount);
-    return () => window.removeEventListener('hashconnect-pairing', syncAccount);
+    return () => {
+        window.removeEventListener('hashconnect-pairing', syncAccount);
+        window.removeEventListener('hashconnect-ready', handleReady);
+    };
   }, []);
 
   const handleConnect = (e) => {
     if (e) e.preventDefault();
+    if (!isBridgeReady) return;
+
     console.log('Button Clicked!');
     setIsConnecting(true);
 
@@ -108,11 +117,16 @@ export const Navbar = () => {
             >
                 [RESET]
             </button>
-            <SkewButton variant="primary" onClick={handleConnect}>
-              {isConnecting ? (
+            <SkewButton
+                variant="primary"
+                onClick={handleConnect}
+                disabled={!isBridgeReady && !accountId}
+                className={!isBridgeReady && !accountId ? "opacity-50 cursor-not-allowed" : ""}
+            >
+              {isConnecting || (!isBridgeReady && !accountId) ? (
                 <span className="flex items-center gap-2">
                   <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
-                  Connecting...
+                  {isConnecting ? "Connecting..." : "Loading Bridge..."}
                 </span>
               ) : (
                 accountId ? accountId : "Connect Wallet"
