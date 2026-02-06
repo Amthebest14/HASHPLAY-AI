@@ -58,9 +58,16 @@ export const initializeHashConnect = async () => {
     try {
         // Clear stale sessions before init to ensure fresh connection
         localStorage.removeItem('hashconnectData');
+        if (hashconnect.clearConnectionsAndData) {
+            await hashconnect.clearConnectionsAndData();
+        }
 
         const initData = await hashconnect.init();
         console.log('HashConnect Initialized', initData);
+
+        if (hashconnect.hcData && hashconnect.hcData.pairingString) {
+             console.log('Pairing String:', hashconnect.hcData.pairingString);
+        }
     } catch (error) {
         console.error('HashConnect Initialization Error:', error);
     }
