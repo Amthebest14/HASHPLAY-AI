@@ -100,16 +100,25 @@ export const Navbar = () => {
         </nav>
 
         {/* Connect */}
-        <SkewButton variant="primary" className="hidden md:flex" onClick={handleConnect}>
-          {isConnecting ? (
-            <span className="flex items-center gap-2">
-              <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
-              Connecting...
-            </span>
-          ) : (
-            accountId ? accountId : "Connect Wallet"
-          )}
-        </SkewButton>
+        <div className="hidden md:flex items-center gap-2">
+            <button
+                onClick={() => { localStorage.clear(); window.location.reload(); }}
+                className="text-xs font-mono text-gray-500 hover:text-red-500 uppercase tracking-widest px-2"
+                title="Reset Connection"
+            >
+                [RESET]
+            </button>
+            <SkewButton variant="primary" onClick={handleConnect}>
+              {isConnecting ? (
+                <span className="flex items-center gap-2">
+                  <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
+                  Connecting...
+                </span>
+              ) : (
+                accountId ? accountId : "Connect Wallet"
+              )}
+            </SkewButton>
+        </div>
 
         {/* Mobile Menu Icon */}
         <button className="lg:hidden text-white">

@@ -4,7 +4,7 @@ import { LedgerId } from '@hashgraph/sdk';
 const appMetadata = {
     name: 'HashPlay AI',
     description: 'AI-Powered P2E Gaming',
-    url: 'http://localhost:3000'
+    url: 'https://localhost:3000'
 };
 
 // Placeholder Project ID as requested
@@ -78,7 +78,7 @@ export const getSigner = (accountId) => {
 };
 
 export const openModal = () => {
-    console.log('Opening HashConnect modal (with 500ms delay)');
+    console.log('Opening HashConnect modal (with 800ms delay)');
 
     // Clear stale pairing string if accessible (best effort based on v3 SDK structure)
     if (hashconnect.hcData) {
@@ -92,6 +92,6 @@ export const openModal = () => {
         console.log('Extension not found, opening pairing modal...');
         setTimeout(() => {
             hashconnect.openPairingModal();
-        }, 500);
+        }, 800);
     }
 };
