@@ -8,7 +8,7 @@ const appMetadata = {
 };
 
 // Placeholder Project ID as requested
-const PROJECT_ID = '6465d42903496525145893';
+const PROJECT_ID = 'e75582c66a8226305655dcbc1b75d53f';
 
 export const hashconnect = new HashConnect(
     LedgerId.TESTNET,
