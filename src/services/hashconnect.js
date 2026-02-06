@@ -39,17 +39,22 @@ hashconnect.connectionStatusChangeEvent.on((connectionStatus) => {
 });
 
 // Initialize
-hashconnect.init().then((initData) => {
-    console.log('HashConnect Initialized', initData);
-    // Check if we have saved data
-    const savedData = localStorage.getItem('hashconnectData');
-    if (savedData) {
-        // We might want to re-establish or check pairing, but v3 usually handles state internally or via initData
-        // If initData contains saved pairings, we are good.
+const initializeHashConnect = async () => {
+    try {
+        const initData = await hashconnect.init();
+        console.log('HashConnect Initialized', initData);
+        // Check if we have saved data
+        const savedData = localStorage.getItem('hashconnectData');
+        if (savedData) {
+            // We might want to re-establish or check pairing, but v3 usually handles state internally or via initData
+            // If initData contains saved pairings, we are good.
+        }
+    } catch (error) {
+        console.error('HashConnect Initialization Error:', error);
     }
-}).catch((err) => {
-    console.error('HashConnect Initialization Error:', err);
-});
+};
+
+initializeHashConnect();
 
 export const getSigner = (accountId) => {
     return hashconnect.getSigner(accountId);
