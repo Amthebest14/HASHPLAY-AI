@@ -61,6 +61,8 @@ export const getSigner = (accountId) => {
 };
 
 export const openModal = () => {
-    console.log('Opening HashConnect modal');
-    hashconnect.openPairingModal();
+    console.log('Opening HashConnect modal (500ms delay)');
+    setTimeout(() => {
+        hashconnect.openPairingModal();
+    }, 500);
 };
