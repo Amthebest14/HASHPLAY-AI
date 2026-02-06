@@ -59,18 +59,24 @@ export const initializeHashConnect = async () => {
     try {
         // Only clear data if specifically requested or invalid, otherwise we lose persistent sessions
         // But for this "Force Clean" request cycle, we keep the clear.
-        // In a real persist scenario, we'd check if data exists and is valid.
-        // For now, consistent with "Fresh Start".
         localStorage.removeItem('hashconnectData');
         if (hashconnect.clearConnectionsAndData) {
             await hashconnect.clearConnectionsAndData();
         }
 
-        const initData = await hashconnect.init();
-        console.log('HashConnect Initialized', initData);
+        // Race condition timeout: Force ready after 5 seconds if init hangs
+        const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve('timeout'), 5000));
+        const initPromise = hashconnect.init();
 
-        if (hashconnect.hcData && hashconnect.hcData.pairingString) {
-             console.log('Pairing String:', hashconnect.hcData.pairingString);
+        const result = await Promise.race([initPromise, timeoutPromise]);
+
+        if (result === 'timeout') {
+            console.warn('HashConnect Initialization Timed Out - Forcing Ready State');
+        } else {
+            console.log('HashConnect Initialized', result);
+            if (hashconnect.hcData && hashconnect.hcData.pairingString) {
+                 console.log('Pairing String:', hashconnect.hcData.pairingString);
+            }
         }
     } catch (error) {
         console.error('HashConnect Initialization Error:', error);
