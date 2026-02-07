@@ -85,6 +85,14 @@ export const initializeHashConnect = async () => {
     }
 };
 
+export const getHashConnectState = () => {
+    return {
+        topic: hashconnect.hcData?.topic || "Unknown",
+        pairingString: hashconnect.hcData?.pairingString || "",
+        extensionFound: extensionFound
+    };
+};
+
 export const disconnectWallet = async () => {
     try {
         if (hashconnect.disconnect) {
