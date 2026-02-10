@@ -42,7 +42,7 @@ def run():
         # It might take up to 5s (timeout) + a bit
         try:
             # Check if we can find a button that eventually says "Connect"
-            btn_with_text = connect_btn.filter(has_text="Connect").first
+            btn_with_text = connect_btn.filter(has_text="CONNECT WALLET").first
             btn_with_text.wait_for(state="visible", timeout=8000)
             print("Connect button is visible and ready.")
 

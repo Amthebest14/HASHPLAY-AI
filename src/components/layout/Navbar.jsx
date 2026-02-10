@@ -52,12 +52,13 @@ export const Navbar = () => {
     // Allow click if connected (to do nothing or show menu) or if bridge is ready
     if (!isBridgeReady && !accountId) return;
 
-    console.log('Mobile Connect Clicked');
+    console.log('Connect Clicked - Signaling Wallet');
     setIsConnecting(true);
 
     try {
       openModal();
-      setTimeout(() => setIsConnecting(false), 5000);
+      // Keep loading state active longer to show "SIGNALING WALLET..." while modal opens
+      setTimeout(() => setIsConnecting(false), 8000);
     } catch (error) {
       console.error("Connect error", error);
       setIsConnecting(false);
@@ -146,11 +147,11 @@ export const Navbar = () => {
                   {accountId ? (
                       <span className="max-w-[100px] truncate">{accountId}</span>
                   ) : (
-                      isConnecting ? "..." : "Loading..."
+                      isConnecting ? "SIGNALING WALLET..." : "LOADING BRIDGE..."
                   )}
                 </span>
               ) : (
-                accountId ? <span className="max-w-[100px] truncate">{accountId}</span> : "Connect"
+                accountId ? <span className="max-w-[100px] truncate">{accountId}</span> : "CONNECT WALLET"
               )}
             </SkewButton>
         </div>

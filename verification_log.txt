@@ -9,3 +9,8 @@
   ➜  Network: use --host to expose
 11:43:26 AM [vite] (client) hmr update /src/components/layout/HealthCheck.jsx, /src/index.css
 12:26:20 AM [vite] (client) hmr update /src/App.jsx, /src/components/layout/HealthCheck.jsx, /src/components/DiceModule.jsx, /src/components/CoinModule.jsx, /src/components/layout/Navbar.jsx, /src/index.css
+12:50:55 AM [vite] (client) hmr update /src/App.jsx, /src/components/layout/HealthCheck.jsx, /src/components/DiceModule.jsx, /src/components/CoinModule.jsx, /src/components/layout/Navbar.jsx, /src/index.css
+12:51:02 AM [vite] (client) hmr update /src/App.jsx, /src/components/layout/HealthCheck.jsx, /src/components/DiceModule.jsx, /src/components/CoinModule.jsx, /src/components/layout/Navbar.jsx, /src/index.css
+12:51:26 AM [vite] (client) page reload src/main.jsx
+12:51:47 AM [vite] (client) hmr update /src/index.css, /src/components/layout/Navbar.jsx
+12:51:52 AM [vite] (client) hmr update /src/index.css, /src/components/layout/Navbar.jsx

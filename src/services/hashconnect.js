@@ -63,9 +63,8 @@ export const initializeHashConnect = async () => {
             await hashconnect.clearConnectionsAndData();
         }
 
-        // Manual Relay & Timeout: Force ready after 5 seconds if init hangs
-        // Note: HashConnect v3 manages relay internally, but this timeout handles stalled connections
-        const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve('timeout'), 5000));
+        // Bypass Relay Hang: Force ready after 3 seconds if init hangs
+        const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve('timeout'), 3000));
         const initPromise = hashconnect.init();
 
         const result = await Promise.race([initPromise, timeoutPromise]);
@@ -83,6 +82,7 @@ export const initializeHashConnect = async () => {
     } catch (error) {
         console.error('HashConnect Initialization Error:', error);
     } finally {
+        // Force the app to become interactive regardless of WebSocket state
         window.dispatchEvent(new Event('hashconnect-ready'));
     }
 };
@@ -117,20 +117,17 @@ export const getSigner = (accountId) => {
 export const openModal = async () => {
     console.log('Opening HashConnect modal');
 
-    // Clear stale pairing string if accessible (best effort based on v3 SDK structure)
-    if (hashconnect.hcData) {
-        hashconnect.hcData.pairingString = '';
+    // Brutal Reset: Break any frozen cycles by force clearing
+    try {
+        await hashconnect.clearConnectionsAndData();
+    } catch (e) {
+        console.warn('Failed to clear connections (non-fatal):', e);
     }
 
     // Delay 1s to allow extension bridge to stabilize if it was just loaded
-    // Master Reset Verification: Increased from 800ms to 1000ms per user request
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    if (extensionFound) {
-        console.log('Extension found, proceeding with connection...');
-        hashconnect.connectToLocalWallet();
-    } else {
-        console.log('Extension not found, opening pairing modal...');
-        hashconnect.openPairingModal();
-    }
+    // Force Pairing Modal: Bypassing connectToLocalWallet optimization to ensure robust handshake
+    console.log('Forcing Pairing Modal...');
+    hashconnect.openPairingModal();
 };

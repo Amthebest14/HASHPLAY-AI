@@ -18,7 +18,7 @@ def run():
         try:
             # Wait for text "Connect" (case sensitive usually) or partial match
             # "Connect" is the text when ready and disconnected
-            btn_with_text = connect_btn.filter(has_text="Connect").first
+            btn_with_text = connect_btn.filter(has_text="CONNECT WALLET").first
             btn_with_text.wait_for(state="visible", timeout=10000)
             print("PASS: Connect button became visible on mobile.")
         except Exception as e:
