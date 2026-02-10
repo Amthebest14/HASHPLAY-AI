@@ -23,3 +23,7 @@
 1:50:01 AM [vite] (client) hmr update /src/pages/MainFloor.jsx, /src/index.css
 1:50:36 AM [vite] (client) hmr update /src/index.css, /src/components/DiceModule.jsx
 1:50:45 AM [vite] (client) hmr update /src/index.css, /src/components/CoinModule.jsx
+2:33:45 AM [vite] (client) hmr update /src/components/layout/Navbar.jsx, /src/index.css
+2:33:54 AM [vite] (client) hmr update /src/components/layout/Navbar.jsx, /src/index.css
+2:34:18 AM [vite] (client) hmr update /src/index.css, /src/components/layout/Navbar.jsx
+2:34:26 AM [vite] (client) hmr update /src/index.css, /src/components/layout/Navbar.jsx
