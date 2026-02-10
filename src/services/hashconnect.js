@@ -57,14 +57,14 @@ if (hashconnect.foundExtensionEvent) {
 // Initialize
 export const initializeHashConnect = async () => {
     try {
-        // Only clear data if specifically requested or invalid, otherwise we lose persistent sessions
-        // But for this "Force Clean" request cycle, we keep the clear.
-        localStorage.removeItem('hashconnectData');
+        // Clean Handshake: Wipe any 'ghost' sessions
+        localStorage.clear();
         if (hashconnect.clearConnectionsAndData) {
             await hashconnect.clearConnectionsAndData();
         }
 
-        // Race condition timeout: Force ready after 5 seconds if init hangs
+        // Manual Relay & Timeout: Force ready after 5 seconds if init hangs
+        // Note: HashConnect v3 manages relay internally, but this timeout handles stalled connections
         const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve('timeout'), 5000));
         const initPromise = hashconnect.init();
 
@@ -74,9 +74,11 @@ export const initializeHashConnect = async () => {
             console.warn('HashConnect Initialization Timed Out - Forcing Ready State');
         } else {
             console.log('HashConnect Initialized', result);
-            if (hashconnect.hcData && hashconnect.hcData.pairingString) {
-                 console.log('Pairing String:', hashconnect.hcData.pairingString);
-            }
+        }
+
+        // Debug Logging: Verify handshake
+        if (hashconnect.hcData && hashconnect.hcData.pairingString) {
+             console.log('Pairing String:', hashconnect.hcData.pairingString);
         }
     } catch (error) {
         console.error('HashConnect Initialization Error:', error);

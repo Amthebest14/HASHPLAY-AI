@@ -8,3 +8,4 @@
   ➜  Local:   http://localhost:5173/
   ➜  Network: use --host to expose
 11:43:26 AM [vite] (client) hmr update /src/components/layout/HealthCheck.jsx, /src/index.css
+12:26:20 AM [vite] (client) hmr update /src/App.jsx, /src/components/layout/HealthCheck.jsx, /src/components/DiceModule.jsx, /src/components/CoinModule.jsx, /src/components/layout/Navbar.jsx, /src/index.css
