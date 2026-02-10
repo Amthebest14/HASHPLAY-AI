@@ -40,3 +40,7 @@
 10:10:15 AM [vite] (client) hmr update /src/index.css, /src/components/DiceModule.jsx
 10:10:57 AM [vite] (client) hmr update /src/index.css, /src/components/CoinModule.jsx
 10:11:51 AM [vite] (client) hmr update /src/index.css, /src/components/ui/GameResultOverlay.jsx
+6:38:40 PM [vite] (client) page reload src/main.jsx
+6:39:20 PM [vite] (client) hmr update /src/index.css, /src/components/layout/Navbar.jsx
+6:40:01 PM [vite] (client) hmr update /src/index.css, /src/components/DiceModule.jsx
+6:40:32 PM [vite] (client) hmr update /src/index.css, /src/components/CoinModule.jsx

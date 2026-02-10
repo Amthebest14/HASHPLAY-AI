@@ -46,14 +46,22 @@ export const CoinModule = () => {
             const receipt = await trans.executeWithSigner(signer);
             console.log('Transaction Sent:', receipt.transactionId.toString());
 
-            // Random Simulation for Result (Heads/Tails)
-            const isHeads = Math.random() < 0.5;
-            setFlipResult(isHeads);
+            // Win Simulation Logic: 20% Chance
+            const isWin = Math.random() < 0.2;
 
-            // Determine Win (0=Heads, 1=Tails)
-            let isWin = false;
-            if (coinSide === 0 && isHeads) isWin = true;
-            if (coinSide === 1 && !isHeads) isWin = true;
+            // Force Flip Result to match Win/Loss
+            let resultHeads;
+            if (isWin) {
+                // If I picked Heads (0) and Won, it must be Heads (true)
+                // If I picked Tails (1) and Won, it must be Tails (false)
+                resultHeads = (coinSide === 0);
+            } else {
+                // If I picked Heads (0) and Lost, it must be Tails (false)
+                // If I picked Tails (1) and Lost, it must be Heads (true)
+                resultHeads = (coinSide !== 0);
+            }
+
+            setFlipResult(resultHeads);
 
             // Stop Animation after receipt confirms
             setResult({

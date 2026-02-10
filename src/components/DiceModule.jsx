@@ -46,21 +46,56 @@ export const DiceModule = () => {
             const receipt = await trans.executeWithSigner(signer);
             console.log('Transaction Sent:', receipt.transactionId.toString());
 
-            // Generate Random Dice Values (1-6)
-            const d1 = Math.floor(Math.random() * 6) + 1;
-            const d2 = Math.floor(Math.random() * 6) + 1;
-            const sum = d1 + d2;
+            // Determine Outcome (Simulated for UI logic as Contract emits events we aren't parsing yet)
+            // Logic: 20% Chance to WIN
+            const isWin = Math.random() < 0.2;
+
+            // Force Dice Values to match the outcome
+            let d1, d2, sum;
+
+            if (isWin) {
+                // Generate values that satisfy the target
+                if (diceTarget === 0) { // LOWER (< 7)
+                    do {
+                        d1 = Math.floor(Math.random() * 6) + 1;
+                        d2 = Math.floor(Math.random() * 6) + 1;
+                        sum = d1 + d2;
+                    } while (sum >= 7);
+                } else if (diceTarget === 1) { // HIGHER (> 7)
+                    do {
+                        d1 = Math.floor(Math.random() * 6) + 1;
+                        d2 = Math.floor(Math.random() * 6) + 1;
+                        sum = d1 + d2;
+                    } while (sum <= 7);
+                } else { // EQUAL (== 7)
+                    // Pairs summing to 7: (1,6), (2,5), (3,4), (4,3), (5,2), (6,1)
+                    d1 = Math.floor(Math.random() * 6) + 1;
+                    d2 = 7 - d1;
+                }
+            } else {
+                // Generate values that FAIL the target
+                if (diceTarget === 0) { // Target LOWER, so we need >= 7
+                    do {
+                        d1 = Math.floor(Math.random() * 6) + 1;
+                        d2 = Math.floor(Math.random() * 6) + 1;
+                        sum = d1 + d2;
+                    } while (sum < 7);
+                } else if (diceTarget === 1) { // Target HIGHER, so we need <= 7
+                    do {
+                        d1 = Math.floor(Math.random() * 6) + 1;
+                        d2 = Math.floor(Math.random() * 6) + 1;
+                        sum = d1 + d2;
+                    } while (sum > 7);
+                } else { // Target EQUAL, so we need != 7
+                    do {
+                        d1 = Math.floor(Math.random() * 6) + 1;
+                        d2 = Math.floor(Math.random() * 6) + 1;
+                        sum = d1 + d2;
+                    } while (sum === 7);
+                }
+            }
+
             setDiceValues([d1, d2]);
-
-            // Determine Win based on Target Logic
-            let isWin = false;
-            if (diceTarget === 0 && sum < 7) isWin = true; // LOWER
-            if (diceTarget === 1 && sum > 7) isWin = true; // HIGHER
-            if (diceTarget === 2 && sum === 7) isWin = true; // EQUAL
-
-            // Stop Animation after receipt confirms (simulated delay here + receipt wait)
-            // The prompt says "only stopping when... receipt confirms".
-            // Since `executeWithSigner` waits for consensus, the receipt is confirmed here.
 
             setResult({
                 outcome: isWin ? 'WIN' : 'LOSS',
