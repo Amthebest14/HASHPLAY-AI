@@ -19,7 +19,7 @@ export const HealthCheck = () => {
             // For simplicity, we'll re-check the global state.
 
             // We can infer relay status from whether we have a topic or pairing string without error
-            const isRelayActive = !!state.pairingString || !!state.topic;
+            const isRelayActive = !!state.pairingString || (state.topic && state.topic !== "Unknown");
 
             setStatus({
                 bridge: true, // If this component mounts and updateStatus runs after init, we assume init passed the blocking stage

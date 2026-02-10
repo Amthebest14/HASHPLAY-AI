@@ -6,8 +6,8 @@ def run(playwright):
     page = browser.new_page()
 
     # Navigate to the Reward Intelligence page
-    # The preview server runs on port 4173 by default
-    page.goto("http://localhost:4173/rewards")
+    # The preview server runs on port 5173 by default
+    page.goto("http://localhost:5173/rewards")
 
     # Wait for the page to load
     page.wait_for_selector("text=Reward Intelligence")

@@ -112,7 +112,7 @@ export const getSigner = (accountId) => {
     return hashconnect.getSigner(accountId);
 };
 
-export const openModal = () => {
+export const openModal = async () => {
     console.log('Opening HashConnect modal');
 
     // Clear stale pairing string if accessible (best effort based on v3 SDK structure)
@@ -120,12 +120,15 @@ export const openModal = () => {
         hashconnect.hcData.pairingString = '';
     }
 
+    // Delay 1s to allow extension bridge to stabilize if it was just loaded
+    // Master Reset Verification: Increased from 800ms to 1000ms per user request
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
     if (extensionFound) {
         console.log('Extension found, proceeding with connection...');
         hashconnect.connectToLocalWallet();
     } else {
         console.log('Extension not found, opening pairing modal...');
-        // Init is async awaited before button is active, so manual delay is removed
         hashconnect.openPairingModal();
     }
 };
