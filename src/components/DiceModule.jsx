@@ -54,6 +54,8 @@ export const DiceModule = () => {
                     txId: receipt.transactionId.toString()
                 });
                 setLoading(false);
+                // Trigger balance refresh
+                window.dispatchEvent(new Event('refresh-balance'));
             }, 2000); // Allow animation to play
 
         } catch (err) {

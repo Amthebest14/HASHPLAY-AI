@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import { SkewButton } from '../ui/SkewButton';
 import { hashconnect, openModal, disconnectWallet } from '../../services/hashconnect';
+import { fetchAccountBalance } from '../../services/mirrorNode';
 
 export const Navbar = () => {
   const location = useLocation();
@@ -10,6 +11,7 @@ export const Navbar = () => {
   const [isConnecting, setIsConnecting] = useState(false);
   const [isBridgeReady, setIsBridgeReady] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [balances, setBalances] = useState({ hbar: '0', token: '0' });
 
   useEffect(() => {
     // Check initial state immediately
@@ -41,11 +43,23 @@ export const Navbar = () => {
 
     syncAccount();
     window.addEventListener('hashconnect-pairing', syncAccount);
+
+    const updateBalances = async () => {
+        if (accountId) {
+            const newBalances = await fetchAccountBalance(accountId);
+            setBalances(newBalances);
+        }
+    };
+
+    updateBalances();
+    window.addEventListener('refresh-balance', updateBalances);
+
     return () => {
         window.removeEventListener('hashconnect-pairing', syncAccount);
         window.removeEventListener('hashconnect-ready', handleReady);
+        window.removeEventListener('refresh-balance', updateBalances);
     };
-  }, []);
+  }, [accountId]); // Add accountId dependency
 
   const handleConnect = (e) => {
     if (e) e.preventDefault();
@@ -121,7 +135,21 @@ export const Navbar = () => {
         </nav>
 
         {/* Connect */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
+            {/* Clean Balance Header */}
+            {accountId && (
+                <div className="hidden lg:flex items-center gap-4 text-xs font-mono">
+                    <div className="flex items-center gap-2 px-3 py-2 border border-primary text-primary bg-primary/5">
+                        <span className="material-symbols-outlined text-sm">account_balance_wallet</span>
+                        <span>{balances.hbar} HBAR</span>
+                    </div>
+                    <div className="flex items-center gap-2 px-3 py-2 border border-primary text-primary bg-primary/5">
+                        <span className="material-symbols-outlined text-sm">token</span>
+                        <span>{balances.token} $HASHPLAY</span>
+                    </div>
+                </div>
+            )}
+
             {accountId && (
                 <button
                     onClick={handleDisconnect}

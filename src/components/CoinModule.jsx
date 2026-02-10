@@ -52,6 +52,8 @@ export const CoinModule = () => {
                     txId: receipt.transactionId.toString()
                 });
                 setLoading(false);
+                // Trigger balance refresh
+                window.dispatchEvent(new Event('refresh-balance'));
             }, 2000);
 
         } catch (err) {
