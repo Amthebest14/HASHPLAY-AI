@@ -137,7 +137,7 @@ export const Navbar = () => {
         {/* Connect */}
         <div className="flex items-center gap-4">
             {/* Testnet Status Badge */}
-            <div className="hidden md:flex items-center px-3 py-2 border border-red-500 text-red-500 bg-red-500/10 font-mono text-xs font-bold tracking-widest shadow-[0_0_10px_rgba(239,68,68,0.3)]">
+            <div className="hidden md:flex items-center px-4 py-2 border border-red-500 text-red-500 bg-red-500/10 font-mono text-xs font-bold tracking-widest shadow-[0_0_10px_rgba(239,68,68,0.3)] min-w-[140px] justify-center">
                 [ NETWORK: TESTNET ]
             </div>
 

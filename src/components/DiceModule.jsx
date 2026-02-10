@@ -44,19 +44,21 @@ export const DiceModule = () => {
             const receipt = await trans.executeWithSigner(signer);
             console.log('Transaction Sent:', receipt.transactionId.toString());
 
-            // Simulating a win for UI feedback since we can't easily parse event logs without a mirror node query
-            // In prod, query mirror node for "DiceRolled" event.
-            // For now, we assume success of execution = "Game Played".
+            // Win Simulation Logic: 20% Chance (1 in 5)
+            // Note: This is purely frontend simulation for UI testing as requested.
+            // Real win depends on contract event logs.
+            const isWin = Math.random() < 0.2;
+
             setTimeout(() => {
                 setResult({
-                    outcome: 'WIN', // Placeholder logic
-                    earnings: (parseFloat(wager) * (diceTarget === 2 ? 5 : 2)).toFixed(2),
+                    outcome: isWin ? 'WIN' : 'LOSS',
+                    earnings: isWin ? (parseFloat(wager) * (diceTarget === 2 ? 5 : 2)).toFixed(2) : "0.00",
                     txId: receipt.transactionId.toString()
                 });
                 setLoading(false);
                 // Trigger balance refresh
                 window.dispatchEvent(new Event('refresh-balance'));
-            }, 2000); // Allow animation to play
+            }, 1500); // 1.5s Animation as requested
 
         } catch (err) {
             console.error("Dice Transaction Failed:", err);
@@ -75,7 +77,7 @@ export const DiceModule = () => {
             />
 
             <div className="flex items-center justify-between mb-4 border-l-4 pl-4 border-primary">
-                <h2 className="text-3xl font-black text-white italic tracking-tighter uppercase">Module 01: Dice</h2>
+                <h2 className="text-3xl font-black text-white italic tracking-tighter uppercase">DICE GAME</h2>
                 <span className="font-mono text-sm px-2 py-1 border text-primary bg-primary/10 border-primary/30">
                     {diceTarget === 2 ? "x5.00 JACKPOT" : "x2.00 MULTIPLIER"}
                 </span>
@@ -90,12 +92,11 @@ export const DiceModule = () => {
                         <motion.div
                             className="w-20 h-20 bg-primary/20 border-2 border-primary absolute"
                             animate={loading ? {
-                                rotate: [0, 90, 180, 270, 360],
-                                scale: [1, 1.2, 0.8, 1],
-                                x: [0, -10, 10, -10, 10, 0],
-                                y: [0, -10, 10, -10, 10, 0]
+                                rotate: [0, 10, -10, 10, -10, 0], // Jitter Effect
+                                x: [0, -5, 5, -5, 5, 0],
+                                scale: [1, 1.1, 0.9, 1.1, 1]
                             } : { rotate: 45 }}
-                            transition={{ duration: 1, repeat: loading ? Infinity : 0 }}
+                            transition={{ duration: 0.5, repeat: loading ? Infinity : 0 }}
                         ></motion.div>
                         <div className="w-20 h-20 bg-transparent border-2 border-white rotate-12 absolute"></div>
                         <span className="material-symbols-outlined !text-6xl text-white relative z-10">casino</span>
@@ -151,7 +152,7 @@ export const DiceModule = () => {
                             style={{ position: 'relative', zIndex: 100, pointerEvents: 'auto' }}
                             className="h-16 md:w-48 bg-primary hover:bg-white text-black font-black text-xl uppercase tracking-wider clip-trapezoid transition-colors flex items-center justify-center pl-4 pr-8 cursor-pointer"
                         >
-                            {loading ? "ROLLING..." : "Initiate"}
+                            {loading ? "ROLLING..." : "ROLL"}
                         </button>
                     </div>
                 </div>

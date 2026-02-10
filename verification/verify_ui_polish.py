@@ -12,8 +12,8 @@ def run():
 
         # 1. Verify Toggle Buttons
         try:
-            dice_tab = page.locator("button", has_text="[ MODULE 01: DICE ]")
-            coin_tab = page.locator("button", has_text="[ MODULE 02: COIN ]")
+            dice_tab = page.locator("button", has_text="[ DICE GAME ]")
+            coin_tab = page.locator("button", has_text="[ COIN FLIP ]")
 
             expect(dice_tab).to_be_visible()
             expect(coin_tab).to_be_visible()
@@ -23,8 +23,8 @@ def run():
 
         # 2. Verify Default State (Dice Active)
         try:
-            # Dice module has "Module 01: Dice" header
-            expect(page.locator("h2", has_text="Module 01: Dice")).to_be_visible()
+            # Dice module has "DICE GAME" header
+            expect(page.locator("h2", has_text="DICE GAME")).to_be_visible()
             print("PASS: Default state (Dice) correct.")
         except:
             print("FAIL: Dice module not visible by default.")
@@ -35,9 +35,9 @@ def run():
         page.wait_for_timeout(1000) # Wait for animation
 
         try:
-            expect(page.locator("h2", has_text="Module 02: Coin")).to_be_visible()
+            expect(page.locator("h2", has_text="COIN FLIP")).to_be_visible()
             # Dice should be gone (or hidden)
-            expect(page.locator("h2", has_text="Module 01: Dice")).not_to_be_visible()
+            expect(page.locator("h2", has_text="DICE GAME")).not_to_be_visible()
             print("PASS: Switched to Coin module.")
         except:
             print("FAIL: Coin switch failed.")

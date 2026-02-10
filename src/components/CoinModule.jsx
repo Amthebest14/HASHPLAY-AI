@@ -44,17 +44,19 @@ export const CoinModule = () => {
             const receipt = await trans.executeWithSigner(signer);
             console.log('Transaction Sent:', receipt.transactionId.toString());
 
-            // Simulate success for UI
+            // Win Simulation Logic: 20% Chance
+            const isWin = Math.random() < 0.2;
+
             setTimeout(() => {
                 setResult({
-                    outcome: 'WIN',
-                    earnings: (parseFloat(wager) * 1.98).toFixed(2),
+                    outcome: isWin ? 'WIN' : 'LOSS',
+                    earnings: isWin ? (parseFloat(wager) * 1.98).toFixed(2) : "0.00",
                     txId: receipt.transactionId.toString()
                 });
                 setLoading(false);
                 // Trigger balance refresh
                 window.dispatchEvent(new Event('refresh-balance'));
-            }, 2000);
+            }, 1500); // 1.5s High-speed spin
 
         } catch (err) {
             console.error("Coin Transaction Failed:", err);
@@ -73,7 +75,7 @@ export const CoinModule = () => {
             />
 
             <div className="flex items-center justify-between mb-4 border-l-4 pl-4 border-white">
-                <h2 className="text-3xl font-black text-white italic tracking-tighter uppercase">Module 02: Coin</h2>
+                <h2 className="text-3xl font-black text-white italic tracking-tighter uppercase">COIN FLIP</h2>
                 <span className="font-mono text-sm px-2 py-1 border text-white bg-white/10 border-white/30">
                     x1.98 MULTIPLIER
                 </span>
@@ -88,8 +90,8 @@ export const CoinModule = () => {
                         <div className="w-24 h-24 rounded-full bg-transparent border-[6px] border-[#395656] absolute"></div>
                         <motion.div
                             className="w-20 h-20 rounded-full bg-white/10 border-2 border-white absolute"
-                            animate={loading ? { rotateY: 720 } : { rotateY: 0 }}
-                            transition={{ duration: 0.5, repeat: loading ? Infinity : 0, ease: "linear" }}
+                            animate={loading ? { rotateY: 360 } : { rotateY: 0 }}
+                            transition={{ duration: 0.2, repeat: loading ? Infinity : 0, ease: "linear" }}
                         ></motion.div>
                         <span className="material-symbols-outlined !text-5xl text-primary relative z-10">monetization_on</span>
                     </div>

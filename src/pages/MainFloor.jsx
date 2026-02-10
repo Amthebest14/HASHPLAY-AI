@@ -28,7 +28,7 @@ export const MainFloor = () => {
                                 : "text-gray-400 hover:text-white hover:bg-[#1a2e2e]"
                         )}
                     >
-                        [ MODULE 01: DICE ]
+                        [ DICE GAME ]
                     </button>
                     <div className="w-[2px] bg-accent-teal"></div>
                     <button
@@ -40,7 +40,7 @@ export const MainFloor = () => {
                                 : "text-gray-400 hover:text-white hover:bg-[#1a2e2e]"
                         )}
                     >
-                        [ MODULE 02: COIN ]
+                        [ COIN FLIP ]
                     </button>
                 </div>
 
