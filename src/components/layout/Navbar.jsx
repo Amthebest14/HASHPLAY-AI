@@ -136,6 +136,7 @@ export const Navbar = () => {
                 variant="primary"
                 onClick={handleConnect}
                 disabled={!isBridgeReady && !accountId}
+                style={{ pointerEvents: 'auto', zIndex: 9999 }}
                 className={clsx(
                     !isBridgeReady && !accountId ? "opacity-50 cursor-not-allowed" : "",
                     "flex" // Always flex, usually constrained by container but request says "visible on all screen sizes"

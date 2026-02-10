@@ -1,6 +1,6 @@
 // The Polyfill Hammer: Explicit window globals for wallet encryption
-window.global = window;
-window.Buffer = window.Buffer || require('buffer').Buffer;
+import { Buffer } from 'buffer';
+window.Buffer = Buffer;
 window.process = { env: {} };
 
 import './polyfills';

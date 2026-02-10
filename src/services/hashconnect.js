@@ -117,17 +117,18 @@ export const getSigner = (accountId) => {
 export const openModal = async () => {
     console.log('Opening HashConnect modal');
 
-    // Brutal Reset: Break any frozen cycles by force clearing
+    // Clear Ghost Sessions: Force fresh pairing request
     try {
         await hashconnect.clearConnectionsAndData();
+        localStorage.removeItem('hashconnectData');
     } catch (e) {
         console.warn('Failed to clear connections (non-fatal):', e);
     }
 
-    // Delay 1s to allow extension bridge to stabilize if it was just loaded
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    // Force Pairing Modal: Bypassing connectToLocalWallet optimization to ensure robust handshake
-    console.log('Forcing Pairing Modal...');
-    hashconnect.openPairingModal();
+    // The 800ms Warm-up Delay: Allow WebSocket relay to generate pairing string
+    console.log('Initiating Warm-up Delay (800ms)...');
+    setTimeout(() => {
+        console.log('Opening Pairing Modal now...');
+        hashconnect.openPairingModal();
+    }, 800);
 };
