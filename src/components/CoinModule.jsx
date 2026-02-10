@@ -5,6 +5,7 @@ import { hashconnect } from '../services/hashconnect';
 import { motion } from 'framer-motion';
 import { WagerPresets } from './ui/WagerPresets';
 import { GameResultOverlay } from './ui/GameResultOverlay';
+import { Coin3D } from './ui/Coin3D';
 
 const CONTRACT_ID = "0.0.7838952";
 
@@ -13,6 +14,7 @@ export const CoinModule = () => {
     const [wager, setWager] = useState('');
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState(null);
+    const [flipResult, setFlipResult] = useState(true); // true: Heads, false: Tails
 
     const handleFlipCoin = async () => {
         console.log('Coin button clicked');
@@ -34,7 +36,7 @@ export const CoinModule = () => {
 
             const trans = new ContractExecuteTransaction()
                 .setContractId(ContractId.fromString(CONTRACT_ID))
-                .setGas(200000)
+                .setGas(300000) // Updated to 300,000 as requested
                 .setFunction("flipCoin",
                     new ContractFunctionParameters()
                     .addUint8(coinSide)
@@ -44,19 +46,25 @@ export const CoinModule = () => {
             const receipt = await trans.executeWithSigner(signer);
             console.log('Transaction Sent:', receipt.transactionId.toString());
 
-            // Win Simulation Logic: 20% Chance
-            const isWin = Math.random() < 0.2;
+            // Random Simulation for Result (Heads/Tails)
+            const isHeads = Math.random() < 0.5;
+            setFlipResult(isHeads);
 
-            setTimeout(() => {
-                setResult({
-                    outcome: isWin ? 'WIN' : 'LOSS',
-                    earnings: isWin ? (parseFloat(wager) * 1.98).toFixed(2) : "0.00",
-                    txId: receipt.transactionId.toString()
-                });
-                setLoading(false);
-                // Trigger balance refresh
-                window.dispatchEvent(new Event('refresh-balance'));
-            }, 1500); // 1.5s High-speed spin
+            // Determine Win (0=Heads, 1=Tails)
+            let isWin = false;
+            if (coinSide === 0 && isHeads) isWin = true;
+            if (coinSide === 1 && !isHeads) isWin = true;
+
+            // Stop Animation after receipt confirms
+            setResult({
+                outcome: isWin ? 'WIN' : 'LOSS',
+                earnings: isWin ? (parseFloat(wager) * 1.98).toFixed(2) : "0.00",
+                txId: receipt.transactionId.toString()
+            });
+            setLoading(false);
+
+            // Trigger balance refresh
+            window.dispatchEvent(new Event('refresh-balance'));
 
         } catch (err) {
             console.error("Coin Transaction Failed:", err);
@@ -86,14 +94,8 @@ export const CoinModule = () => {
 
                 {/* Visual Area */}
                 <div className="relative flex-1 flex items-center justify-center min-h-[200px] mb-8 bg-black/30 border-2 border-dashed border-[#395656]">
-                    <div className="relative w-32 h-32 flex items-center justify-center">
-                        <div className="w-24 h-24 rounded-full bg-transparent border-[6px] border-[#395656] absolute"></div>
-                        <motion.div
-                            className="w-20 h-20 rounded-full bg-white/10 border-2 border-white absolute"
-                            animate={loading ? { rotateY: 360 } : { rotateY: 0 }}
-                            transition={{ duration: 0.2, repeat: loading ? Infinity : 0, ease: "linear" }}
-                        ></motion.div>
-                        <span className="material-symbols-outlined !text-5xl text-primary relative z-10">monetization_on</span>
+                    <div className="relative flex items-center justify-center">
+                        <Coin3D isHeads={flipResult} flipping={loading} />
                     </div>
                 </div>
 

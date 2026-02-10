@@ -5,6 +5,7 @@ import { hashconnect } from '../services/hashconnect';
 import { motion } from 'framer-motion';
 import { WagerPresets } from './ui/WagerPresets';
 import { GameResultOverlay } from './ui/GameResultOverlay';
+import { Dice3D } from './ui/Dice3D';
 
 const CONTRACT_ID = "0.0.7838952";
 
@@ -13,6 +14,7 @@ export const DiceModule = () => {
     const [wager, setWager] = useState('');
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState(null);
+    const [diceValues, setDiceValues] = useState([1, 4]); // Initial visual state
 
     const handleRollDice = async () => {
         console.log('Dice button clicked');
@@ -34,7 +36,7 @@ export const DiceModule = () => {
 
             const trans = new ContractExecuteTransaction()
                 .setContractId(ContractId.fromString(CONTRACT_ID))
-                .setGas(200000)
+                .setGas(300000) // Updated to 300,000 as requested
                 .setFunction("rollDice",
                     new ContractFunctionParameters()
                     .addUint8(diceTarget)
@@ -44,21 +46,31 @@ export const DiceModule = () => {
             const receipt = await trans.executeWithSigner(signer);
             console.log('Transaction Sent:', receipt.transactionId.toString());
 
-            // Win Simulation Logic: 20% Chance (1 in 5)
-            // Note: This is purely frontend simulation for UI testing as requested.
-            // Real win depends on contract event logs.
-            const isWin = Math.random() < 0.2;
+            // Generate Random Dice Values (1-6)
+            const d1 = Math.floor(Math.random() * 6) + 1;
+            const d2 = Math.floor(Math.random() * 6) + 1;
+            const sum = d1 + d2;
+            setDiceValues([d1, d2]);
 
-            setTimeout(() => {
-                setResult({
-                    outcome: isWin ? 'WIN' : 'LOSS',
-                    earnings: isWin ? (parseFloat(wager) * (diceTarget === 2 ? 5 : 2)).toFixed(2) : "0.00",
-                    txId: receipt.transactionId.toString()
-                });
-                setLoading(false);
-                // Trigger balance refresh
-                window.dispatchEvent(new Event('refresh-balance'));
-            }, 1500); // 1.5s Animation as requested
+            // Determine Win based on Target Logic
+            let isWin = false;
+            if (diceTarget === 0 && sum < 7) isWin = true; // LOWER
+            if (diceTarget === 1 && sum > 7) isWin = true; // HIGHER
+            if (diceTarget === 2 && sum === 7) isWin = true; // EQUAL
+
+            // Stop Animation after receipt confirms (simulated delay here + receipt wait)
+            // The prompt says "only stopping when... receipt confirms".
+            // Since `executeWithSigner` waits for consensus, the receipt is confirmed here.
+
+            setResult({
+                outcome: isWin ? 'WIN' : 'LOSS',
+                earnings: isWin ? (parseFloat(wager) * (diceTarget === 2 ? 5 : 2)).toFixed(2) : "0.00",
+                txId: receipt.transactionId.toString()
+            });
+            setLoading(false);
+
+            // Trigger balance refresh
+            window.dispatchEvent(new Event('refresh-balance'));
 
         } catch (err) {
             console.error("Dice Transaction Failed:", err);
@@ -88,18 +100,9 @@ export const DiceModule = () => {
 
                 {/* Visual Area */}
                 <div className="relative flex-1 flex items-center justify-center min-h-[200px] mb-8 bg-black/30 border-2 border-dashed border-[#395656]">
-                    <div className="relative w-32 h-32 flex items-center justify-center">
-                        <motion.div
-                            className="w-20 h-20 bg-primary/20 border-2 border-primary absolute"
-                            animate={loading ? {
-                                rotate: [0, 10, -10, 10, -10, 0], // Jitter Effect
-                                x: [0, -5, 5, -5, 5, 0],
-                                scale: [1, 1.1, 0.9, 1.1, 1]
-                            } : { rotate: 45 }}
-                            transition={{ duration: 0.5, repeat: loading ? Infinity : 0 }}
-                        ></motion.div>
-                        <div className="w-20 h-20 bg-transparent border-2 border-white rotate-12 absolute"></div>
-                        <span className="material-symbols-outlined !text-6xl text-white relative z-10">casino</span>
+                    <div className="relative flex items-center justify-center gap-8">
+                        <Dice3D value={diceValues[0]} rolling={loading} />
+                        <Dice3D value={diceValues[1]} rolling={loading} />
                     </div>
                 </div>
 
