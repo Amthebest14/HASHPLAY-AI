@@ -1,7 +1,6 @@
 import React from 'react';
-import clsx from 'clsx';
 
-export const WagerPresets = ({ onSelect }) => {
+export const WagerPresets = React.memo(({ onSelect }) => {
     const presets = [5, 10, 50, 100, 500, 1000];
 
     return (
@@ -17,4 +16,4 @@ export const WagerPresets = ({ onSelect }) => {
             ))}
         </div>
     );
-};
+});
