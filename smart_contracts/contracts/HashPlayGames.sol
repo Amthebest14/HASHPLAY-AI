@@ -23,6 +23,8 @@ contract HashPlayGames {
     // Precompile address for Hedera Token Service
     address constant PRECOMPILE_ADDRESS = 0x0000000000000000000000000000000000000167;
 
+    int256 constant RESPONSE_CODE_SUCCESS = 22;
+
     event DiceRolled(address indexed player, uint256 wager, uint256 result, bool won, uint256 payout);
     event CoinFlipped(address indexed player, uint256 wager, uint256 result, bool won, uint256 payout);
     event MultiplierUpdated(uint256 oldMultiplier, uint256 newMultiplier);
@@ -75,7 +77,7 @@ contract HashPlayGames {
      */
     function associateToken(address token) external onlyOwner {
         int256 response = IHederaTokenService(PRECOMPILE_ADDRESS).associateToken(address(this), token);
-        require(response == 22, "Token association failed"); // 22 = SUCCESS
+        require(response == RESPONSE_CODE_SUCCESS, "Token association failed");
         emit TokenAssociated(token);
     }
 
@@ -148,7 +150,7 @@ contract HashPlayGames {
      */
     function payoutTokenReward(address token, address winner, int64 amount) external onlyOwner {
         int256 response = IHederaTokenService(PRECOMPILE_ADDRESS).transferToken(token, address(this), winner, amount);
-        require(response == 22, "Token transfer failed");
+        require(response == RESPONSE_CODE_SUCCESS, "Token transfer failed");
         emit TokenRewardPaid(token, winner, amount);
     }
 
