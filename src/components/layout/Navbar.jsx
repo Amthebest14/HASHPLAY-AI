@@ -5,6 +5,13 @@ import { SkewButton } from '../ui/SkewButton';
 import { hashconnect, openModal, disconnectWallet } from '../../services/hashconnect';
 import { fetchAccountBalance } from '../../services/mirrorNode';
 
+const navItems = [
+  { name: 'Floor', path: '/', icon: 'casino' },
+  { name: 'Rewards', path: '/rewards', icon: 'deployed_code' },
+  { name: 'Ranking', path: '/leaderboard', icon: 'trophy' },
+  { name: 'Vault', path: '/vault', icon: 'hexagon' },
+];
+
 export const Navbar = () => {
   const location = useLocation();
   const [accountId, setAccountId] = useState(null);
@@ -85,13 +92,6 @@ export const Navbar = () => {
       setIsConnecting(false);
       window.location.reload();
   };
-
-  const navItems = [
-    { name: 'Floor', path: '/', icon: 'casino' },
-    { name: 'Rewards', path: '/rewards', icon: 'deployed_code' },
-    { name: 'Ranking', path: '/leaderboard', icon: 'trophy' },
-    { name: 'Vault', path: '/vault', icon: 'hexagon' },
-  ];
 
   return (
     <header className="w-full border-b-2 border-accent-teal bg-obsidian z-50 sticky top-0">
