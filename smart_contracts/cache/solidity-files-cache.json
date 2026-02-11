@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/app/smart_contracts/contracts/HashPlayGames.sol": {
-      "lastModificationDate": 1770388254868,
-      "contentHash": "bec8e583646a5f040e4a555406c0edb5",
+      "lastModificationDate": 1770829945712,
+      "contentHash": "719591c00235e55eca188fce6d84dd43",
       "sourceName": "contracts/HashPlayGames.sol",
       "solcConfig": {
         "version": "0.8.20",
