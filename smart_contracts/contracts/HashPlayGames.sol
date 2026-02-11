@@ -20,6 +20,9 @@ contract HashPlayGames {
     uint256 public rewardMultiplier;
     uint256 public constant BASIS_POINTS = 10000;
 
+    // Nonce for extra entropy
+    uint256 private nonce;
+
     // Precompile address for Hedera Token Service
     address constant PRECOMPILE_ADDRESS = 0x0000000000000000000000000000000000000167;
 
@@ -84,11 +87,13 @@ contract HashPlayGames {
      * @param prediction 0 = Under 7, 1 = Over 7, 2 = Equal 7.
      */
     function rollDice(uint8 prediction) external payable {
+        require(msg.sender == tx.origin, "Only EOA allowed");
         require(msg.value > 0, "Wager must be > 0");
         require(prediction <= 2, "Invalid prediction: 0 (Under), 1 (Over), 2 (Equal)");
 
-        // Generate randomness using Hedera's PRNG (mapped to PREVRANDAO)
-        uint256 random = block.prevrandao;
+        // Generate randomness using Hedera's PRNG (mapped to PREVRANDAO) mixed with local entropy
+        uint256 random = uint256(keccak256(abi.encodePacked(block.prevrandao, block.timestamp, msg.sender, nonce)));
+        nonce++;
 
         // Simulate 2 dice (1-6)
         uint256 d1 = (random % 6) + 1;
@@ -123,11 +128,13 @@ contract HashPlayGames {
      * @param prediction 0 = Heads, 1 = Tails.
      */
     function flipCoin(uint8 prediction) external payable {
+        require(msg.sender == tx.origin, "Only EOA allowed");
         require(msg.value > 0, "Wager must be > 0");
         require(prediction == 0 || prediction == 1, "Invalid prediction: 0 (Heads) or 1 (Tails)");
 
         // Generate randomness
-        uint256 random = block.prevrandao;
+        uint256 random = uint256(keccak256(abi.encodePacked(block.prevrandao, block.timestamp, msg.sender, nonce)));
+        nonce++;
         uint256 result = random % 2; // 0 or 1
 
         bool won = (result == prediction);
