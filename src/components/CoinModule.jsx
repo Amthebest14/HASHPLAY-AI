@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import clsx from 'clsx';
 import { ContractExecuteTransaction, ContractId, Hbar, HbarUnit, ContractFunctionParameters } from '@hashgraph/sdk';
 import { hashconnect } from '../services/hashconnect';
-import { motion } from 'framer-motion';
 import { WagerPresets } from './ui/WagerPresets';
 import { GameResultOverlay } from './ui/GameResultOverlay';
 import { Coin3D } from './ui/Coin3D';
+import { useToast } from '../context/ToastContext';
 
 const CONTRACT_ID = "0.0.7838952";
 
@@ -15,6 +14,7 @@ export const CoinModule = () => {
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState(null);
     const [flipResult, setFlipResult] = useState(true); // true: Heads, false: Tails
+    const { addToast } = useToast();
 
     const handleFlipCoin = async () => {
         console.log('Coin button clicked');
@@ -28,7 +28,7 @@ export const CoinModule = () => {
 
             if (!accountId) {
                 console.error("No account connected");
-                alert("Please connect wallet first");
+                addToast("Please connect wallet first", "error");
                 return;
             }
 
