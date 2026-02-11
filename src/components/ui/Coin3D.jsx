@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-export const Coin3D = ({ isHeads = true, flipping = false }) => {
+export const Coin3D = React.memo(({ isHeads = true, flipping = false }) => {
     return (
         <div className="w-32 h-32 perspective-1000">
             <motion.div
@@ -32,4 +32,4 @@ export const Coin3D = ({ isHeads = true, flipping = false }) => {
             </motion.div>
         </div>
     );
-};
+});
