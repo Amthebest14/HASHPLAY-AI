@@ -74,11 +74,6 @@ export const initializeHashConnect = async () => {
         } else {
             console.log('HashConnect Initialized', result);
         }
-
-        // Debug Logging: Verify handshake
-        if (hashconnect.hcData && hashconnect.hcData.pairingString) {
-             console.log('Pairing String:', hashconnect.hcData.pairingString);
-        }
     } catch (error) {
         console.error('HashConnect Initialization Error:', error);
     } finally {
