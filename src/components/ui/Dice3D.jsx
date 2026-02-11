@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import clsx from 'clsx';
+import React, { memo } from 'react';
 import { motion } from 'framer-motion';
 
-export const Dice3D = ({ value = 1, rolling = false }) => {
+export const Dice3D = memo(({ value = 1, rolling = false }) => {
     // Face rotations for standard dice (1-6)
     // 1: front (0,0), 2: right (0,-90), 3: back (0,180), 4: left (0,90), 5: top (-90,0), 6: bottom (90,0)
     const getRotation = (val) => {
@@ -97,4 +96,4 @@ export const Dice3D = ({ value = 1, rolling = false }) => {
             </motion.div>
         </div>
     );
-};
+});
