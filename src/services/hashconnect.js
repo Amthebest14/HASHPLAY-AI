@@ -8,8 +8,12 @@ const appMetadata = {
     url: 'https://hashplayai.vercel.app'
 };
 
-// Placeholder Project ID as requested
-const PROJECT_ID = 'e75582c66a8226305655dcbc1b75d53f';
+// Retrieve Project ID from environment variables
+const PROJECT_ID = import.meta.env.VITE_HASHCONNECT_PROJECT_ID;
+
+if (!PROJECT_ID) {
+    throw new Error('VITE_HASHCONNECT_PROJECT_ID environment variable is missing. Please add it to your .env file.');
+}
 
 export const hashconnect = new HashConnect(
     LedgerId.TESTNET,
