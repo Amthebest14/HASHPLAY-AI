@@ -58,7 +58,7 @@ if (hashconnect.foundExtensionEvent) {
 export const initializeHashConnect = async () => {
     try {
         // Clean Handshake: Wipe any 'ghost' sessions
-        localStorage.clear();
+        localStorage.removeItem('hashconnectData');
         if (hashconnect.clearConnectionsAndData) {
             await hashconnect.clearConnectionsAndData();
         }
@@ -104,7 +104,6 @@ export const disconnectWallet = async () => {
             await hashconnect.clearConnectionsAndData();
         }
         localStorage.removeItem('hashconnectData');
-        localStorage.clear();
     } catch (e) {
         console.error("Disconnect error", e);
     }
