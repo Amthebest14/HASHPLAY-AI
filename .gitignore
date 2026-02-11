@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Hardhat artifacts
+smart_contracts/artifacts/
+smart_contracts/cache/
+smart_contracts/typechain-types/
